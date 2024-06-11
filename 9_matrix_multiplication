@@ -1,0 +1,54 @@
+#include <stdio.h>
+
+#define MAX 10
+
+int main() {
+    int first[MAX][MAX], second[MAX][MAX], result[MAX][MAX];
+    int rowFirst, colFirst, rowSecond, colSecond;
+    int i, j, k;
+
+    rowFirst = 2;
+    colFirst = 2;
+    rowSecond = 2;
+    colSecond = 2;
+    printf("Isha Singh-192210252\n");
+    printf("Enter elements of the first matrix (%d x %d):\n", rowFirst, colFirst);
+    for (i = 0; i < rowFirst; i++) {
+        for (j = 0; j < colFirst; j++) {
+            printf("Enter element [%d][%d]: ", i, j);
+            scanf("%d", &first[i][j]);
+        }
+    }
+
+    printf("Enter elements of the second matrix (%d x %d):\n", rowSecond, colSecond);
+    for (i = 0; i < rowSecond; i++) {
+        for (j = 0; j < colSecond; j++) {
+            printf("Enter element [%d][%d]: ", i, j);
+            scanf("%d", &second[i][j]);
+        }
+    }
+
+    for (i = 0; i < rowFirst; i++) {
+        for (j = 0; j < colSecond; j++) {
+            result[i][j] = 0;
+        }
+    }
+
+    for (i = 0; i < rowFirst; i++) {
+        for (j = 0; j < colSecond; j++) {
+            for (k = 0; k < colFirst; k++) {
+                result[i][j] += first[i][k] * second[k][j];
+            }
+        }
+    }
+
+    printf("Resultant matrix:\n");
+    for (i = 0; i < rowFirst; i++) {
+        for (j = 0; j < colSecond; j++) {
+            printf("%d ", result[i][j]);
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
