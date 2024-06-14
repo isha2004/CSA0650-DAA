@@ -1,58 +1,65 @@
 #include <stdio.h>
 #include <limits.h>
-#include <stdbool.h>
 
-#define V 5
+#define MAX 100
 
-int minKey(int key[], bool mstSet[]) {
-    int min = INT_MAX, min_index;
-    int v;
-    for (v = 0; v < V; v++)
-        if (mstSet[v] == false && key[v] < min)
-            min = key[v], min_index = v;
+int n;
+float p[MAX], q[MAX], e[MAX][MAX], w[MAX][MAX], root[MAX][MAX];
 
-    return min_index;
-}
-
-void printMST(int parent[], int graph[V][V]) {
-    printf("Edge \tWeight\n");
-    int i;
-    for (i = 1; i < V; i++)
-        printf("%d - %d \t%d \n", parent[i], i, graph[i][parent[i]]);
-}
-
-void primMST(int graph[V][V]) {
-    int parent[V];
-    int key[V];
-    bool mstSet[V];
-    int i,count,v;
-    for (i = 0; i < V; i++)
-        key[i] = INT_MAX, mstSet[i] = false;
-
-    key[0] = 0;
-    parent[0] = -1;
-
-    for (count = 0; count < V - 1; count++) {
-        int u = minKey(key, mstSet);
-        mstSet[u] = true;
-
-        for ( v = 0; v < V; v++)
-            if (graph[u][v] && mstSet[v] == false && graph[u][v] < key[v])
-                parent[v] = u, key[v] = graph[u][v];
+void optimalBST(float p[], float q[], int n) {
+	int i,l;
+    for (i = 1; i <= n + 1; i++) {
+        e[i][i - 1] = q[i - 1];
+        w[i][i - 1] = q[i - 1];
     }
+    for (l = 1; l <= n; l++) {
+    	int i,r;
+        for (i = 1; i <= n - l + 1; i++) {
+            int j = i + l - 1;
+            e[i][j] = INT_MAX;
+            w[i][j] = w[i][j - 1] + p[j] + q[j];
+            for (r = i; r <= j; r++) {
+                float t = e[i][r - 1] + e[r + 1][j] + w[i][j];
+                if (t < e[i][j]) {
+                    e[i][j] = t;
+                    root[i][j] = r;
+                }
+            }
+        }
+    }
+}
 
-    printMST(parent, graph);
+void printOBST(int i, int j, int r) {
+    if (i == j) {
+        printf("d%d is the left child of k%d\n", j, r);
+        return;
+    }
+    int k = root[i][j];
+    if (k == root[1][n]) {
+        printf("k%d is the root\n", k);
+    } else if (j < k) {
+        printf("k%d is the left child of k%d\n", k, r);
+    } else {
+        printf("k%d is the right child of k%d\n", k, r);
+    }
+    printOBST(i, k - 1, k);
+    printOBST(k + 1, j, k);
 }
 
 int main() {
 	printf("Isha Singh-192210252\n");
-    int graph[V][V] = { {0, 2, 0, 6, 0},
-                        {2, 0, 3, 8, 5},
-                        {0, 3, 0, 0, 7},
-                        {6, 8, 0, 0, 9},
-                        {0, 5, 7, 9, 0} };
-
-    primMST(graph);
-
+    printf("Enter number of keys: ");
+    scanf("%d", &n);
+    printf("Enter probabilities for keys: ");
+    int i;
+    for (i = 1; i <= n; i++) {
+        scanf("%f", &p[i]);
+    }
+    printf("Enter probabilities for dummy keys: ");
+    for (i = 0; i <= n; i++) {
+        scanf("%f", &q[i]);
+    }
+    optimalBST(p, q, n);
+    printOBST(1, n, root[1][n]);
     return 0;
 }
